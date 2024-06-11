@@ -1,5 +1,7 @@
 #include QMK_KEYBOARD_H
 
+#include "sendstring_german.h"
+
 #include <string.h>
 #include "print.h"
 
@@ -23,85 +25,89 @@ enum layer_number {
 #define CKC_UMLO KC_SCLN
 #define CKC_UMLU KC_LBRC
 
-// Shifted symbols
-#define CKC_COLN LSFT(KC_DOT)
-#define CKC_QUES LSFT(KC_MINS)
-
 // Implemented in process_record_user
 enum Custom {
-    CKC_SFTENT = SAFE_RANGE,
+    CUSTOM_KEYS_START = SAFE_RANGE, // used to initialize an array for storing the state of all custom keys
 
-    CUSTOM_KEYS_START, // used to initialize an array for storing the state of all custom keys
-
-    CKC_EQL,
-    CKC_LBRC,
-    CKC_RBRC,
-    CKC_BSLS,
-    CKC_SCLN,
     CKC_QUOT,
     CKC_COMM,
     CKC_DOT,
-    CKC_SLSH,
 
     CKC_AT,
     CKC_HASH,
     CKC_AMPR,
     CKC_ASTR,
     CKC_UNDS,
+    CKC_EQL,
     CKC_PLUS,
+    CKC_SLSH,
+    CKC_BSLS,
     CKC_PIPE,
     CKC_DQUO,
     CKC_TILD,
+    CKC_COLN,
+    CKC_SCLN,
+    CKC_QUES,
     CKC_LPRN,
     CKC_RPRN,
+    CKC_LBRC,
+    CKC_RBRC,
     CKC_LCBR,
     CKC_RCBR,
-    CKC_CIRC,
-    CKC_GRV,
-
     CKC_SZ,
     CKC_EURO,
 
     CUSTOM_KEYS_END,
+
+    CKC_CIRC,
+    CKC_GRV,
+
+    // Macros
+    CM_ACAT,
+    CM_AFAC,
+    CM_HYPR,
+    CM_ANOY,
+    CM_WHAT,
+    CM_CRY,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* MAIN
     *  ,----------------------------------.      ,----------------------------------.
-    *  |   Q  |   W  |   F  |   P  |   B  |      |   J  |   L  |   U  |   Y  |   ;  |
+    *  |   Q  |   W  |   F  |   P  |   B  |      |   J  |   L  |   U  |   Y  |Bcksp |
     *  |------+------+------+------+------|      |------+------+------+------+------|
     *  |   A  |   R  |   S  |   F  |   G  |      |   M  |   N  |   E  |   I  |   O  | 
     *  |------+------+------+------+------|      |------+------+------+------+------|
-    *  |   Z  |   X  |   C  |   D  |   V  |      |   K  |   H  |   ,  |   .  |   /  | 
+    *  |   Z  |   X  |   C  |   D  |   V  |      |   K  |   H  |   ,  |   .  |   '  | 
     *  `--------------------+------+------|      |------+------+--------------------/
-    *                       | LEFT |ENTSFT|      | Space| RIGHT|
+    *                       |TabNav|Shift |      |SpSym |EntSym2|
     *                       `-------------/      `-------------/
     */
     [_MAIN] = LAYOUT(
-        KC_Q,     KC_W, KC_F,         KC_P,         KC_B, KC_J, KC_L,         KC_U,      CKC_Y, KC_BSPC,
-        GUI_T(KC_A), ALT_T(KC_R), SFT_T(KC_S), CTL_T(KC_T), KC_G, KC_M, RCTL_T(KC_N), RSFT_T(KC_E),  ALT_T(KC_I),  GUI_T(KC_O),
-        CKC_Z,    KC_X,         KC_C,         KC_D,         KC_V, KC_K, KC_H,         CKC_COMM,      CKC_DOT,       CKC_QUOT,
+        KC_Q,        KC_W,        KC_F,        KC_P,        KC_B, KC_J, KC_L,         KC_U,         CKC_Y,       KC_BSPC,
+        GUI_T(KC_A), ALT_T(KC_R), SFT_T(KC_S), CTL_T(KC_T), KC_G, KC_M, RCTL_T(KC_N), RSFT_T(KC_E), ALT_T(KC_I), GUI_T(KC_O),
+        CKC_Z,       KC_X,        KC_C,        KC_D,        KC_V, KC_K, KC_H,         CKC_COMM,     CKC_DOT,     CKC_QUOT,
                           LT(_NAVIGATION, KC_TAB), OSM(MOD_LSFT), LT(_SYMBOLS, KC_SPC), LT(_SYMBOLS2, KC_ENT)
     ),
 
     [_SYMBOLS] = LAYOUT(
-        KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0,
-        _, CKC_LBRC, CKC_LCBR, CKC_LPRN, _, _, CKC_MINS, CKC_EQL, CKC_SCLN, CKC_SLSH,
-        _, CKC_RBRC, CKC_RCBR, CKC_RPRN, _, _, CKC_TILD, CKC_COMM, CKC_DOT, CKC_PIPE,
-        _, _, _, _
+        KC_1, KC_2,     KC_3,     KC_4,     KC_5, KC_6,     KC_7,     KC_8,     KC_9,     KC_0,
+        _,    CKC_LBRC, CKC_LCBR, CKC_LPRN, _,    CKC_QUES, CKC_MINS, CKC_EQL,  CKC_SLSH, CKC_SCLN,
+        _,    CKC_RBRC, CKC_RCBR, CKC_RPRN, _,    _,        CKC_UNDS, CKC_PLUS, CKC_BSLS, CKC_COLN,
+                                            _, _, _, _
     ),
 
     [_SYMBOLS2] = LAYOUT(
-        KC_EXLM, CKC_AT, CKC_HASH, KC_DLR, KC_PERC, CKC_CIRC, CKC_AMPR, CKC_ASTR, KC_F11, KC_F12,
-        _, CKC_UMLU, CKC_UMLO, CKC_UMLA, _, _, CKC_UNDS, CKC_PLUS, CKC_COLN, CKC_BSLS,
-        _, _, CKC_EURO, CKC_SZ, _, _, _, _, CKC_QUES, CKC_GRV,
-        MO(_ADJUST), _, _, _
+        KC_EXLM, CKC_AT,   CKC_HASH, KC_DLR,   KC_PERC, CKC_CIRC, CKC_AMPR, CKC_ASTR, KC_F11,   KC_F12,
+        _,       CKC_UMLU, CKC_UMLO, CKC_UMLA, _,       CM_ACAT,  CM_HYPR,  CM_WHAT,  CKC_PIPE, CKC_TILD,
+        _,       _,        CKC_EURO, CKC_SZ,   _,       CM_AFAC,  CM_ANOY,  CM_CRY,   _,        CKC_GRV,
+                                        MO(_ADJUST), _, _, _
     ),
 
     [_NAVIGATION] = LAYOUT(
         _, _, _, _, _, _, KC_PGDN, KC_UP, KC_PGUP, KC_DEL,
-        KC_CAPS, KC_MPRV, KC_MPLY, KC_MNXT, _, _, KC_LEFT, KC_DOWN, KC_RIGHT, KC_LGUI,
-        _, _, _, _, _, _, KC_PSCR, _, _, _,
+        _, _, _, _, _, _, KC_LEFT, KC_DOWN, KC_RIGHT, KC_LGUI,
+        KC_CAPS, KC_ESC, KC_ENT, _, _, _, KC_PSCR, _, _, _,
         _, _, KC_ESC, MO(_ADJUST)
     ),
 
@@ -114,9 +120,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 // Custom keys
-bool keys_pressed_while_sftent = false;
-uint16_t sftent_timer = 0;
-
 bool physical_lshift_down = false;
 bool physical_rshift_down = false;
 bool lshift_down = false;
@@ -287,10 +290,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     uprintf("kc: 0x%04X, pressed: %u, time: %5u, int: %u, count: %u\n", keycode, pressed, record->event.time, record->tap.interrupted, record->tap.count);
 #endif 
 
-    if (physical_lshift_down && keycode != CKC_SFTENT && pressed) {
-        keys_pressed_while_sftent = true;
-    }
-
     switch (keycode) {
         case OSM(MOD_LSFT):
         case SFT_T(KC_S):
@@ -302,41 +301,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             rshift_down = pressed;
             return true;
 
-        case CKC_SFTENT:
-            physical_lshift_down = pressed;
-            lshift_down = pressed;
-            if (pressed) {
-                register_code(KC_LSFT);
-                keys_pressed_while_sftent = false;
-                sftent_timer = timer_read();
-            } else {
-                unregister_code(KC_LSFT);
-                if (!keys_pressed_while_sftent && timer_elapsed(sftent_timer) <= TAPPING_TERM) {
-                    tap_code(KC_ENT);
-                }
-            }
-            return false;
-
-        // = +
-        case CKC_EQL:
-            handle_key(keycode, pressed, KC_0, true, false, KC_RBRC, false, false);
-            return false;
-        // [ {
-        case CKC_LBRC:
-            handle_key(keycode, pressed, KC_8, false, true, KC_7, false, true);
-            return false;
-        // ] }
-        case CKC_RBRC:
-            handle_key(keycode, pressed, KC_9, false, true, KC_0, false, true);
-            return false;
-        // \ |
-        case CKC_BSLS:
-            handle_key(keycode, pressed, KC_MINS, false, true, KC_NUBS, false, true);
-            return false;
-        // ; :
-        case CKC_SCLN:
-            handle_key(keycode, pressed, KC_COMM, true, false, KC_DOT, true, false);
-            return false;
         // ' "
         case CKC_QUOT:
             handle_key(keycode, pressed, KC_BSLS, true, false, KC_2, true, false);
@@ -348,10 +312,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // . >
         case CKC_DOT:
             handle_key(keycode, pressed, KC_DOT, false, false, KC_NUBS, true, false);
-            return false;
-        // / ?
-        case CKC_SLSH:
-            handle_key(keycode, pressed, KC_7, true, false, KC_MINS, true, false);
             return false;
 
         // @
@@ -374,9 +334,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CKC_UNDS:
             HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_SLSH, true, false);
             return false;
+        // =
+        case CKC_EQL:
+            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_0, true, false);
+            return false;
         // +
         case CKC_PLUS:
             HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_RBRC, false, false);
+            return false;
+        // /
+        case CKC_SLSH:
+            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_7, true, false);
+            return false;
+        // "\"
+        case CKC_BSLS:
+            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_MINS, false, true);
             return false;
         // |
         case CKC_PIPE:
@@ -390,6 +362,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CKC_TILD:
             HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_RBRC, false, true);
             return false;
+        // :
+        case CKC_COLN:
+            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_DOT, true, false);
+            return false;
+        // ;
+        case CKC_SCLN:
+            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_COMM, true, false);
+            return false;
+        // ?
+        case CKC_QUES:
+            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_MINS, true, false);
+            return false;
         // (
         case CKC_LPRN:
             HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_8, true, false);
@@ -397,6 +381,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // )
         case CKC_RPRN:
             HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_9, true, false);
+            return false;
+        // [
+        case CKC_LBRC:
+            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_8, false, true);
+            return false;
+        // ]
+        case CKC_RBRC:
+            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_9, false, true);
             return false;
         // {
         case CKC_LCBR:
@@ -406,6 +398,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CKC_RCBR:
             HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_0, false, true);
             return false;
+        // ß
+        case CKC_SZ:
+            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_MINS, false, false);
+            return false;
+        // €
+        case CKC_EURO:
+            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_E, false, true);
+            return false;
+
         // ^
         case CKC_CIRC:
             if (pressed) {
@@ -433,13 +434,35 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        // ß
-        case CKC_SZ:
-            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_MINS, false, false);
+        case CM_ACAT:
+            if (pressed) {
+                SEND_STRING(">:3");
+            }
             return false;
-        // €
-        case CKC_EURO:
-            HANDLE_KEY_IGNORE_SHIFT(keycode, pressed, KC_E, false, true);
+        case CM_AFAC:
+            if (pressed) {
+                SEND_STRING(">:(");
+            }
+            return false;
+        case CM_HYPR:
+            if (pressed) {
+                SEND_STRING(">_>");
+            }
+            return false;
+        case CM_ANOY:
+            if (pressed) {
+                SEND_STRING("-_-");
+            }
+            return false;
+        case CM_WHAT:
+            if (pressed) {
+                SEND_STRING("._.");
+            }
+            return false;
+        case CM_CRY:
+            if (pressed) {
+                SEND_STRING("TwT");
+            }
             return false;
 
         default:
